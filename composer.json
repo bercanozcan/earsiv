@@ -1,6 +1,6 @@
 {
     "name": "bercanozcan/earsiv",
-    "description": "Laravel 12 projeleri için geliştirilen e-Arşiv fatura entegrasyon paketi.",
+    "description": "Bu Laravel paketi, GİB e-Arşiv Portalı ile doğrudan bağlantı kurarak kullanıcıların e-Arşiv faturalarını otomatik olarak oluşturmasını, önizlemesini almasını, indirmesini ve yönetmesini sağlar.",
     "keywords": [
         "gib",
         "earşiv",
