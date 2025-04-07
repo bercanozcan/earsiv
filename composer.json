@@ -1,0 +1,37 @@
+{
+    "name": "bercanozcan/earsiv",
+    "description": "Laravel 12 projeleri için geliştirilen e-Arşiv fatura entegrasyon paketi.",
+    "keywords": [
+        "gib",
+        "earşiv",
+        "efatura",
+        "e fatura",
+        "e arşiv",
+        "internet vergi dairesi",
+        "earşiv laravel",
+        "gib laravel",
+        "efatura laravel"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bercanozcan\\Earsiv\\Providers\\GibServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Bercanozcan\\Earsiv\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Bercan Özcan",
+            "email": "bercanozcan@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
