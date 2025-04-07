@@ -3,6 +3,17 @@
 Bu Laravel paketi, GİB e-Arşiv Portalı ile doğrudan bağlantı kurarak kullanıcıların e-Arşiv faturalarını otomatik olarak oluşturmasını, önizlemesini almasını, indirmesini ve yönetmesini sağlar.
 
 ---
+## Gereksinimler
+
+## Depo Durumu
+
+![PHP](https://img.shields.io/packagist/dependency-v/bercanozcan/earsiv/php?style=plastic)
+![Laravel](https://img.shields.io/packagist/v/bercanozcan/earsiv?style=plastic)
+![Son Commit](https://img.shields.io/github/last-commit/bercanozcan/earsiv)
+![Açık Konular](https://img.shields.io/github/issues/bercanozcan/earsiv)
+![Kapalı Konular](https://img.shields.io/github/issues-closed/bercanozcan/earsiv)
+![Yıldızlar](https://img.shields.io/github/stars/bercanozcan/earsiv)
+![Çatallar](https://img.shields.io/github/forks/bercanozcan/earsiv)
 
 ## 🔧 Kurulum
 
