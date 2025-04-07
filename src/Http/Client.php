@@ -1,10 +1,9 @@
 <?php
 
-
 namespace Bercanozcan\Earsiv\Http;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http;
 
 class Client
 {
@@ -23,7 +22,7 @@ class Client
             ? Http::asForm()
             : Http::withHeaders(['Content-Type' => 'application/json']);
 
-        return $request->post($this->baseUrl . $path, $data);
+        return $request->post($this->baseUrl.$path, $data);
     }
 
     public function getBaseUrl(): string

@@ -2,8 +2,8 @@
 
 namespace Bercanozcan\Earsiv\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Bercanozcan\Earsiv\Gib;
+use Illuminate\Support\ServiceProvider;
 
 class GibServiceProvider extends ServiceProvider
 {

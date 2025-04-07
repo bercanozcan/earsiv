@@ -2,7 +2,6 @@
 
 namespace Bercanozcan\Earsiv;
 
-use Bercanozcan\Earsiv\Exceptions\LoginException;
 use Bercanozcan\Earsiv\Exceptions\RequestException;
 use Bercanozcan\Earsiv\Http\Client;
 use Illuminate\Support\Facades\Http;
@@ -12,8 +11,11 @@ use Illuminate\Support\Str;
 class Gib
 {
     protected bool $testMode;
+
     protected ?string $username;
+
     protected ?string $password;
+
     protected ?string $token = null;
 
     public function __construct(bool $testMode = false, ?string $username = null, ?string $password = null)
@@ -29,17 +31,18 @@ class Gib
 
         $response = $client->post('/earsiv-services/assos-login', [
             'assoscmd' => $this->testMode ? 'login' : 'anologin',
-            'userid'   => $this->username,
-            'sifre'    => $this->password,
-            'sifre2'   => $this->password,
-            'parola'   => $this->password,
+            'userid' => $this->username,
+            'sifre' => $this->password,
+            'sifre2' => $this->password,
+            'parola' => $this->password,
         ]);
 
-        if ($response->failed() || !$response->json('token')) {
-            throw new \Exception('Giriş başarısız: ' . $response->body());
+        if ($response->failed() || ! $response->json('token')) {
+            throw new \Exception('Giriş başarısız: '.$response->body());
         }
 
         $this->token = $response->json('token');
+
         return $this;
     }
 
@@ -49,12 +52,12 @@ class Gib
 
         $response = $client->post('/earsiv-services/esign', [
             'assoscmd' => 'kullaniciOner',
-            'rtype'    => 'json'
+            'rtype' => 'json',
         ]);
 
         $userid = $response->json('userid');
 
-        if (!$userid) {
+        if (! $userid) {
             throw new RequestException('Test hesabı alınamadı: sistemdeki tüm hesaplar kullanılıyor olabilir.');
         }
 
@@ -80,22 +83,22 @@ class Gib
 
     public function getUserData(): array
     {
-        if (!$this->token) {
+        if (! $this->token) {
             throw new RequestException('Kullanıcı verisi alınamıyor: önce giriş yapmalısınız.');
         }
 
         $client = new Client($this->testMode);
 
         $response = $client->post('/earsiv-services/dispatch', [
-            'callid'   => (string) Str::uuid(),
-            'token'    => $this->token,
-            'cmd'      => 'EARSIV_PORTAL_KULLANICI_BILGILERI_GETIR',
+            'callid' => (string) Str::uuid(),
+            'token' => $this->token,
+            'cmd' => 'EARSIV_PORTAL_KULLANICI_BILGILERI_GETIR',
             'pageName' => 'RG_KULLANICI',
-            'jp'       => '{}'
+            'jp' => '{}',
         ]);
 
-        if ($response->failed() || !$response->json('data')) {
-            throw new RequestException('GİB kullanıcı bilgileri alınamadı: ' . $response->body());
+        if ($response->failed() || ! $response->json('data')) {
+            throw new RequestException('GİB kullanıcı bilgileri alınamadı: '.$response->body());
         }
 
         return $response->json('data');
@@ -103,29 +106,29 @@ class Gib
 
     public function getInvoices(string $startDate, string $endDate): array
     {
-        if (!$this->token) {
+        if (! $this->token) {
             throw new RequestException('Faturaları çekmek için önce giriş yapmalısınız.');
         }
 
         // GİB dd/MM/yyyy formatını bekler
         $payload = [
             'baslangic' => $startDate,
-            'bitis'     => $endDate,
-            'hangiTip'  => '5000/30000'
+            'bitis' => $endDate,
+            'hangiTip' => '5000/30000',
         ];
 
         $client = new Client($this->testMode);
 
         $response = $client->post('/earsiv-services/dispatch', [
-            'callid'   => (string) Str::uuid(),
-            'token'    => $this->token,
-            'cmd'      => 'EARSIV_PORTAL_TASLAKLARI_GETIR',
+            'callid' => (string) Str::uuid(),
+            'token' => $this->token,
+            'cmd' => 'EARSIV_PORTAL_TASLAKLARI_GETIR',
             'pageName' => 'RG_TASLAKLAR',
-            'jp'       => json_encode($payload),
+            'jp' => json_encode($payload),
         ]);
 
-        if ($response->failed() || !$response->json('data')) {
-            throw new RequestException('Fatura verileri alınamadı: ' . $response->body());
+        if ($response->failed() || ! $response->json('data')) {
+            throw new RequestException('Fatura verileri alınamadı: '.$response->body());
         }
 
         return $response->json('data');
@@ -133,22 +136,22 @@ class Gib
 
     public function getInvoice(string $ettn): array
     {
-        if (!$this->token) {
+        if (! $this->token) {
             throw new RequestException('Fatura bilgisi alınamıyor: önce giriş yapmalısınız.');
         }
 
         $client = new Client($this->testMode);
 
         $response = $client->post('/earsiv-services/dispatch', [
-            'callid'   => (string) Str::uuid(),
-            'token'    => $this->token,
-            'cmd'      => 'EARSIV_PORTAL_FATURA_GETIR',
+            'callid' => (string) Str::uuid(),
+            'token' => $this->token,
+            'cmd' => 'EARSIV_PORTAL_FATURA_GETIR',
             'pageName' => 'RG_TASLAKLAR',
-            'jp'       => json_encode(['ettn' => $ettn]),
+            'jp' => json_encode(['ettn' => $ettn]),
         ]);
 
-        if ($response->failed() || !$response->json('data')) {
-            throw new RequestException('Fatura detayları alınamadı: ' . $response->body());
+        if ($response->failed() || ! $response->json('data')) {
+            throw new RequestException('Fatura detayları alınamadı: '.$response->body());
         }
 
         return $response->json('data');
@@ -156,7 +159,7 @@ class Gib
 
     public function getDownloadUrl(string $ettn, bool $signed = true): string
     {
-        if (!$this->token) {
+        if (! $this->token) {
             throw new RequestException('Download linki oluşturulamıyor: önce giriş yapmalısınız.');
         }
 
@@ -165,11 +168,11 @@ class Gib
             : 'https://earsivportal.efatura.gov.tr';
 
         $params = http_build_query([
-            'token'      => $this->token,
-            'ettn'       => $ettn,
+            'token' => $this->token,
+            'ettn' => $ettn,
             'onayDurumu' => $signed ? 'Onaylandı' : 'Onaylanmadı',
-            'belgeTip'   => 'FATURA',
-            'cmd'        => 'EARSIV_PORTAL_BELGE_INDIR',
+            'belgeTip' => 'FATURA',
+            'cmd' => 'EARSIV_PORTAL_BELGE_INDIR',
         ]);
 
         return "{$baseUrl}/earsiv-services/download?{$params}";
@@ -177,22 +180,22 @@ class Gib
 
     public function saveToDisk(string $ettn, ?string $dirName = null, ?string $fileName = null): string
     {
-        if (!$this->token) {
+        if (! $this->token) {
             throw new RequestException('Dosya indirilemedi: önce giriş yapmalısınız.');
         }
 
-        $diskName    = 'public';
-        $directory   = $dirName ?? 'faturalar';
-        $file        = ($fileName ?? $ettn) . '.zip';
-        $fullPath    = trim($directory, '/') . '/' . $file;
+        $diskName = 'public';
+        $directory = $dirName ?? 'faturalar';
+        $file = ($fileName ?? $ettn).'.zip';
+        $fullPath = trim($directory, '/').'/'.$file;
 
         $downloadUrl = $this->getDownloadUrl($ettn);
 
         $response = Http::withHeaders([
-            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36'
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
         ])->timeout(60)->get($downloadUrl);
 
-        if ($response->failed() || !$response->body()) {
+        if ($response->failed() || ! $response->body()) {
             throw new RequestException("Fatura indirilemedi: $ettn");
         }
 
@@ -203,26 +206,26 @@ class Gib
 
     public function getHtml(string $ettn, bool $signed = true): string
     {
-        if (!$this->token) {
+        if (! $this->token) {
             throw new RequestException('Fatura önizlemesi alınamıyor: önce giriş yapmalısınız.');
         }
 
         $client = new Client($this->testMode);
 
         $payload = [
-            'ettn'       => $ettn,
+            'ettn' => $ettn,
             'onayDurumu' => $signed ? 'Onaylandı' : 'Onaylanmadı',
         ];
 
         $response = $client->post('/earsiv-services/dispatch', [
-            'callid'   => (string) Str::uuid(),
-            'token'    => $this->token,
-            'cmd'      => 'EARSIV_PORTAL_FATURA_GOSTER',
+            'callid' => (string) Str::uuid(),
+            'token' => $this->token,
+            'cmd' => 'EARSIV_PORTAL_FATURA_GOSTER',
             'pageName' => 'RG_TASLAKLAR',
-            'jp'       => json_encode($payload),
+            'jp' => json_encode($payload),
         ]);
 
-        if ($response->failed() || !$response->json('data')) {
+        if ($response->failed() || ! $response->json('data')) {
             throw new RequestException("Fatura önizleme alınamadı: $ettn");
         }
 
@@ -231,24 +234,24 @@ class Gib
 
     public function createDraft(array $invoice): string
     {
-        if (!$this->token) {
+        if (! $this->token) {
             throw new RequestException('Fatura oluşturulamadı: önce giriş yapmalısınız.');
         }
 
         $client = new Client($this->testMode);
 
         $response = $client->post('/earsiv-services/dispatch', [
-            'callid'   => (string) Str::uuid(),
-            'token'    => $this->token,
-            'cmd'      => 'EARSIV_PORTAL_FATURA_OLUSTUR',
+            'callid' => (string) Str::uuid(),
+            'token' => $this->token,
+            'cmd' => 'EARSIV_PORTAL_FATURA_OLUSTUR',
             'pageName' => 'RG_BASITFATURA',
-            'jp'       => json_encode($invoice, JSON_UNESCAPED_UNICODE),
+            'jp' => json_encode($invoice, JSON_UNESCAPED_UNICODE),
         ]);
 
         $result = $response->json('data');
 
-        if ($response->failed() || !$result || !str_contains($result, 'başarıyla')) {
-            throw new RequestException('Fatura oluşturulamadı: ' . ($result ?? 'Bilinmeyen hata'));
+        if ($response->failed() || ! $result || ! str_contains($result, 'başarıyla')) {
+            throw new RequestException('Fatura oluşturulamadı: '.($result ?? 'Bilinmeyen hata'));
         }
 
         return $invoice['faturaUuid'];
